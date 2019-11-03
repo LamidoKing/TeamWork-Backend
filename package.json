@@ -1,0 +1,9 @@
+{
+  "name": "teamwork-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:LamidoKing/teamwork-backend.git",
+  "author": "lamido <kinglamido@gmail.com>",
+  "license": "MIT",
+  "scripts": {}
+}
