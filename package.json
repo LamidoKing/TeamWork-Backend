@@ -1,9 +1,16 @@
 {
   "name": "teamwork-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "repository": "git@github.com:LamidoKing/teamwork-backend.git",
   "author": "lamido <kinglamido@gmail.com>",
   "license": "MIT",
-  "scripts": {}
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
 }
