@@ -6,7 +6,8 @@
   "author": "lamido <kinglamido@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "lint": "eslint 'src/**/*.js' --fix"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
