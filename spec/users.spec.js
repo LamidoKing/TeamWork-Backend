@@ -35,7 +35,7 @@ beforeEach((done) => {
 describe('Auth APIs Endpoints', () => {
   it('POST / create-user', (done) => {
     frisby
-      .post(`${baseUrl}/create-user`, user)
+      .post(`${baseUrl}create-user`, user)
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -43,15 +43,14 @@ describe('Auth APIs Endpoints', () => {
       .expect('jsonTypes', 'data', {
         message: Joi.string().required(),
         token: Joi.string().required(),
-        userId: Joi.number().required(),
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
         email: Joi.string().required(),
         password: Joi.string().required(),
-        gender: Joi.string().required(),
-        jobRole: Joi.string().required(),
-        department: Joi.string().required(),
-        address: Joi.string().required(),
+        userId: Joi.number().required(),
+        firstName: Joi.string(),
+        lastName: Joi.string(),
+        gender: Joi.string(),
+        jobRole: Joi.string(),
+        address: Joi.string(),
       });
     done();
   });
