@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { userRoutes } = require('./routes');
 
 const app = express();
 
@@ -11,5 +12,7 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
+
+app.use('/api/v1/auth', userRoutes);
 
 module.exports = app;

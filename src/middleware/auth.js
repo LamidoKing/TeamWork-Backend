@@ -1,11 +1,52 @@
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 
-const getToken = (userId) => jwt.sign(
-  { userId },
-  `${process.env.RANDOM_TOKEN}`,
-  { expiresIn: '24h' },
-);
+const auth = async (req, res, next) => {
+  try {
+    const token = await req.headers.authorization.split(' ')[1];
+
+    const decodedToken = jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+
+    const { userId } = decodedToken;
+
+    if (req.body.user_id && req.body.user_id !== userId) {
+      const err = 'Invalid user ID';
+      throw err;
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(401).json({
+      status: 'error',
+      error: 'Invalid request!',
+    });
+  }
+};
+
+const authAdmin = async (req, res, next) => {
+  try {
+    const token = await req.headers.authorization.split(' ')[1];
+
+    const decodedToken = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+
+    const { role } = decodedToken;
+
+    if (role.toString() !== process.env.ADMIN) {
+      const err = process.env.ADMIN;
+      throw err;
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(401).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
-  getToken,
+  auth,
+  authAdmin,
 };
