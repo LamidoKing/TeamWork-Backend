@@ -1,6 +1,8 @@
-const { encrypt, attemptCreateUser, getToken } = require('../utils');
+const {
+ encrypt, attemptCreateUser, attemptSignIn, getToken 
+} = require('../utils');
 const db = require('../db');
-const { createUserQuery } = require('../queries');
+const { createUserQuery, findUserQuery } = require('../queries');
 
 require('dotenv').config();
 
@@ -14,9 +16,9 @@ const createUser = async (req, res, next) => {
 
     const password = await encrypt(req.body.password);
 
-    const rolenumber = admin ? process.env.ADMIN : process.env.USER;
+    const rolenumber = admin ? process.env.ADMIN : 1;
 
-    const value = [email, password, rolenumber, firstname, lastname, gender, jobrole, department, address]
+    const value = [email, password, rolenumber, firstname, lastname, gender, jobrole, department, address];
 
     const { rows } = await db.query(createUserQuery, value);
 
@@ -47,7 +49,35 @@ const createUser = async (req, res, next) => {
   }
 };
 
+const signIn = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const { rows } = await db.query(findUserQuery, [email]);
+
+    const user = await attemptSignIn(rows, password);
+
+    const token = await getToken(user.user_id, user.rolenumber);
+
+    const data = {
+      message: 'Signin successfully!',
+      token,
+      userId: user.user_id,
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'err',
+      error,
+    });
+  }
+};
 
 module.exports = {
   createUser,
+  signIn,
 };

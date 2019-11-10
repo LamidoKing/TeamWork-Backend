@@ -15,6 +15,14 @@ const encrypt = async (password) => {
   throw err;
 };
 
+const decrypt = async (user, password) => {
+  const err = 'password is not correct';
+  const { valid } = await bcrypt.compare(password, user.password);
+  if (!valid) {
+    throw err;
+  }
+};
+
 const getToken = async (userId, rolenumber) => {
   const token = await jwt.sign({ userId, rolenumber }, `${process.env.RANDOM_TOKEN}`, { expiresIn: '24h' });
   return token;
@@ -46,8 +54,27 @@ const attemptCreateUser = async (email) => {
   return email;
 };
 
+const attemptSignIn = async (rows, password) => {
+  const err = {
+    nouser: 'user with this doent exist',
+    passwordError: 'password is not correct',
+  };
+
+  if (!rows[0]) {
+    throw err.nouser;
+  }
+  const valid = await bcrypt.compare(password, rows[0].password);
+
+  if (!valid) {
+    throw err.passwordError;
+  }
+
+  return rows[0];
+};
+
 module.exports = {
   encrypt,
   getToken,
   attemptCreateUser,
+  attemptSignIn,
 };

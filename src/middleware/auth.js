@@ -26,17 +26,26 @@ const auth = async (req, res, next) => {
 
 const authAdmin = async (req, res, next) => {
   try {
-    const token = await req.headers.authorization.split(' ')[1];
+    const { authorization } = req.headers;
 
-    const decodedToken = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+    const err = {
+      notAuth: 'Only user with admin access can create account',
+      noToken: 'must SignIn As Admin',
+    };
+    if (authorization) {
+      const token = await req.headers.authorization.split(' ')[1];
+      const decodedToken = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
 
-    const { role } = decodedToken;
 
-    if (role.toString() !== process.env.ADMIN) {
-      const err = process.env.ADMIN;
-      throw err;
+      const { rolenumber } = decodedToken;
+
+      if (rolenumber.toString() !== process.env.ADMIN) {
+        throw err.notAuth;
+      } else {
+        next();
+      }
     } else {
-      next();
+      throw err.noToken;
     }
   } catch (error) {
     res.status(401).json({
@@ -45,6 +54,7 @@ const authAdmin = async (req, res, next) => {
     });
   }
 };
+
 
 module.exports = {
   auth,
