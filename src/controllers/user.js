@@ -1,5 +1,5 @@
 const {
- encrypt, attemptCreateUser, attemptSignIn, getToken 
+  encrypt, attemptCreateUser, attemptSignIn, getToken 
 } = require('../utils');
 const db = require('../db');
 const { createUserQuery, findUserQuery } = require('../queries');
@@ -62,7 +62,6 @@ const signIn = async (req, res, next) => {
     const data = {
       message: 'Signin successfully!',
       token,
-      userId: user.user_id,
     };
 
     res.status(201).json({

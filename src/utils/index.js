@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const { findUserQuery } = require('../queries');
+const { uploader } = require('../config')
+const { dataUri } = require('../middleware')
 
 require('dotenv').config();
 
@@ -72,9 +74,38 @@ const attemptSignIn = async (rows, password) => {
   return rows[0];
 };
 
+const gettUserId = async (req) => {
+  const token = await req.headers.authorization.split(' ')[1];
+  const { userId } = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+
+  return userId;
+};
+
+const processGifToUrl = async (req) => {
+  const err = {
+    noFile: 'must provide gif to post',
+    fileTypeErr: 'file uploded iss not gif file',
+  };
+
+  if (!req.file) {
+    throw err.noFile;
+  }
+
+  if (req.file.mimetype !== 'image/gif') {
+    throw err.fileTypeErr;
+  }
+
+  const file = await dataUri(req).content;
+
+  const { url } = await uploader.upload(file)
+
+  return url;
+};
 module.exports = {
   encrypt,
   getToken,
   attemptCreateUser,
   attemptSignIn,
+  gettUserId,
+  processGifToUrl,
 };

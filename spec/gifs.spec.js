@@ -46,7 +46,7 @@ describe('Gifs Endpoints', () => {
         message: Joi.string().required(),
         gifId: Joi.number().required(),
         title: Joi.string().required(),
-        imageUrl: Joi.string().required(),
+        gifUrl: Joi.string().required(),
         createOn: Joi.date().required(),
       });
     done();
