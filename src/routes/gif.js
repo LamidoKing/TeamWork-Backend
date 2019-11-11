@@ -1,7 +1,6 @@
 const Router = require('express-promise-router');
 const { postGif } = require('../controllers');
-const { auth } = require('../middleware/auth');
-const { multerUploads } = require('../middleware');
+const { auth, multerUploads } = require('../middleware');
 const { cloudinary } = require('../config');
 
 const router = new Router();

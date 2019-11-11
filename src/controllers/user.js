@@ -1,5 +1,5 @@
 const {
-  encrypt, attemptCreateUser, attemptSignIn, getToken 
+  encrypt, attemptCreateUser, attemptSignIn, getToken,
 } = require('../utils');
 const db = require('../db');
 const { createUserQuery, findUserQuery } = require('../queries');
@@ -43,7 +43,7 @@ const createUser = async (req, res, next) => {
     });
   } catch (error) {
     return res.status(400).json({
-      status: 'err',
+      status: 'error',
       error,
     });
   }
@@ -70,7 +70,7 @@ const signIn = async (req, res, next) => {
     });
   } catch (error) {
     return res.status(500).json({
-      status: 'err',
+      status: 'error',
       error,
     });
   }

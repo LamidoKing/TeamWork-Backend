@@ -1,31 +1,29 @@
-const { gettUserId, processGifToUrl } = require('../utils');
+const { gettUserId, attemptPostArticle } = require('../utils');
 const db = require('../db');
 const { postGifQuery } = require('../queries');
 
 require('dotenv').config();
 
-const postGif = async (req, res, next) => {
+const postArticle = async (req, res, next) => {
   try {
-    const {
-      title,
-    } = req.body;
+    const { title, article } = req.body;
+
+    await attemptPostArticle(title, article);
 
     const userId = await gettUserId(req);
 
-    const url = await processGifToUrl(req);
-
-    const value = [title, userId, url];
+    const value = [title, userId, article];
 
     const { rows } = await db.query(postGifQuery, value);
 
     const data = {
-      message: 'GIF image successfully posted',
-      gifId: rows[0].gif_id,
+      message: 'Article successfully posted',
+      articleId: rows[0].article_id,
       userId: rows[0].user_id,
       title: rows[0].title,
-      gifUrl: rows[0].gif_url,
       createdOn: rows[0].created_on,
     };
+
     res.status(201).json({
       status: 'success',
       data,
@@ -39,5 +37,5 @@ const postGif = async (req, res, next) => {
 };
 
 module.exports = {
-  postGif,
+  postArticle,
 };

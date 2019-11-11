@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const { findUserQuery } = require('../queries');
-const { uploader } = require('../config')
-const { dataUri } = require('../middleware')
+const { uploader } = require('../config');
+const { dataUri } = require('../middleware');
 
 require('dotenv').config();
 
@@ -97,10 +97,26 @@ const processGifToUrl = async (req) => {
 
   const file = await dataUri(req).content;
 
-  const { url } = await uploader.upload(file)
+  const { url } = await uploader.upload(file);
 
   return url;
 };
+
+const attemptPostArticle = async (title, article) => {
+  const err = {
+    noTitle: 'must provide title for the article',
+    noArticle: 'must provide article to post',
+  };
+
+  if (!title) {
+    throw err.noTitle;
+  }
+
+  if (!article) {
+    throw err.noArticle;
+  }
+};
+
 module.exports = {
   encrypt,
   getToken,
@@ -108,4 +124,5 @@ module.exports = {
   attemptSignIn,
   gettUserId,
   processGifToUrl,
+  attemptPostArticle,
 };

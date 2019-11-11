@@ -44,7 +44,6 @@ describe('Articles Endpoints', () => {
       })
       .expect('jsonTypes', 'data', {
         message: Joi.string().required(),
-        articleId: Joi.number().required(),
         title: Joi.string().required(),
         create_on: Joi.date().required(),
       });
