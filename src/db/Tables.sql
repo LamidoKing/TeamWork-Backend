@@ -33,7 +33,7 @@ CREATE TABLE gifs
     gif_id serial NOT NULL,
 	user_id int REFERENCES users(user_id),
 	title character varying(50) NOT NULL,
-    imageUrl character varying(50)NOT NULL,
+    gif_url character varying(50)NOT NULL,
     created_On date NOT NULL DEFAULT now(),
     PRIMARY KEY (gif_id)
 )
