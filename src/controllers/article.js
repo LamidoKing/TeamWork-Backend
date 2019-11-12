@@ -1,6 +1,8 @@
-const { gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields } = require('../utils');
+const {
+ gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields 
+} = require('../utils');
 const db = require('../db');
-const { 
+const {
   postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery, commentArticleQuery,
 } = require('../queries');
 
@@ -74,7 +76,6 @@ const editArticle = async (req, res, next) => {
 
 const deleteArticle = async (req, res, next) => {
   try {
-
     const articleId = parseInt(req.params.id, 10);
 
     const result = await db.query(findArticleByIdQuery, [articleId]);
@@ -105,9 +106,9 @@ const commentArticle = async (req, res, next) => {
   try {
     const fields = {
       comment: req.body.comment,
-    }
-    
-    await validateInputsFields(fields, 'comment')
+    };
+
+    await validateInputsFields(fields, 'comment');
 
     const articleId = parseInt(req.params.id, 10);
 
