@@ -119,15 +119,30 @@ const attemptPostArticle = async (title, article) => {
 
 const searchAtrribute = async (result, name) => {
   const err = {
-    nouser: `${name} doent exist`,
+    noattr: `${name} doent exist`,
   };
 
   if (!result.rows[0]) {
-    throw err.nouser;
+    throw err.noattr;
   }
-  return result;
-
+  return result.rows[0];
 };
+
+const validateInputsFields = (fields, model) => {
+  const err = {
+    comment: {
+      noComment: 'must input your comment'
+    }
+  }
+
+  if(model === 'comment') {
+    if(!fields.comment) {
+      throw err.comment.noComment;
+    }
+    return true;
+  }
+
+}
 
 module.exports = {
   encrypt,
@@ -138,4 +153,5 @@ module.exports = {
   processGifToUrl,
   attemptPostArticle,
   searchAtrribute,
+  validateInputsFields,
 };

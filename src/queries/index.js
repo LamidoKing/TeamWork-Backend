@@ -1,7 +1,7 @@
 const { createUserQuery, findUserQuery } = require('./user');
 const { postGifQuery, findGifByIdQuery, deleteGifQuery } = require('./gif');
 const {
- postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery 
+  postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery, commentArticleQuery,
 } = require('./article');
 
 module.exports = {
@@ -14,4 +14,5 @@ module.exports = {
   findGifByIdQuery,
   deleteArticleQuery,
   deleteGifQuery,
+  commentArticleQuery,
 };

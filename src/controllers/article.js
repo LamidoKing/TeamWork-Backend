@@ -1,6 +1,8 @@
-const { gettUserId, attemptPostArticle, searchAtrribute } = require('../utils');
+const { gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields } = require('../utils');
 const db = require('../db');
-const { postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery } = require('../queries');
+const { 
+  postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery, commentArticleQuery,
+} = require('../queries');
 
 require('dotenv').config();
 
@@ -99,8 +101,51 @@ const deleteArticle = async (req, res, next) => {
   }
 };
 
+const commentArticle = async (req, res, next) => {
+  try {
+    const fields = {
+      comment: req.body.comment,
+    }
+    
+    await validateInputsFields(fields, 'comment')
+
+    const articleId = parseInt(req.params.id, 10);
+
+    const userId = await gettUserId(req);
+
+    const result = await db.query(findArticleByIdQuery, [articleId]);
+
+    const article = await searchAtrribute(result, 'article');
+
+
+    const value = [userId, fields.comment, articleId];
+
+    const { rows } = await db.query(commentArticleQuery, value);
+
+    const data = {
+      message: 'Comment successfully created',
+      commentID: rows[0].comment_id,
+      articleTitle: article.title,
+      article: article.article,
+      comment: rows[0].comment,
+      createdOn: rows[0].created_on,
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
   postArticle,
   editArticle,
   deleteArticle,
+  commentArticle,
 };
