@@ -1,6 +1,6 @@
 const { gettUserId, attemptPostArticle, searchAtrribute } = require('../utils');
 const db = require('../db');
-const { postArticleQuery, editArticleQuery, findArticleByIdQuery } = require('../queries');
+const { postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery } = require('../queries');
 
 require('dotenv').config();
 
@@ -70,7 +70,37 @@ const editArticle = async (req, res, next) => {
   }
 };
 
+const deleteArticle = async (req, res, next) => {
+  try {
+
+    const articleId = parseInt(req.params.id, 10);
+
+    const result = await db.query(findArticleByIdQuery, [articleId]);
+
+    await searchAtrribute(result, 'article');
+
+    const value = [articleId];
+
+    await db.query(deleteArticleQuery, value);
+
+    const data = {
+      message: 'Article successfully deleted',
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
   postArticle,
   editArticle,
+  deleteArticle,
 };
