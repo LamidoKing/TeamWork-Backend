@@ -1,5 +1,5 @@
 const { createUser, signIn } = require('./user');
-const { postGif } = require('./gif')
+const { postGif, deleteGif } = require('./gif')
 const { postArticle, editArticle, deleteArticle } = require('./article')
 
 module.exports = {
@@ -8,5 +8,6 @@ module.exports = {
   postGif,
   postArticle,
   editArticle,
-  deleteArticle
+  deleteArticle,
+  deleteGif,
 };

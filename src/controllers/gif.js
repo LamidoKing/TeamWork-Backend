@@ -1,6 +1,6 @@
-const { gettUserId, processGifToUrl } = require('../utils');
+const { gettUserId, processGifToUrl, searchAtrribute } = require('../utils');
 const db = require('../db');
-const { postGifQuery } = require('../queries');
+const { postGifQuery, findGifByIdQuery, deleteGifQuery } = require('../queries');
 
 require('dotenv').config();
 
@@ -38,6 +38,35 @@ const postGif = async (req, res, next) => {
   }
 };
 
+const deleteGif = async (req, res, next) => {
+  try {
+    const gifId = parseInt(req.params.id, 10);
+
+    const result = await db.query(findGifByIdQuery, [gifId]);
+
+    await searchAtrribute(result, 'gif');
+
+    const value = [gifId];
+
+    await db.query(deleteGifQuery, value);
+
+    const data = {
+      message: 'Gif successfully deleted',
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
   postGif,
+  deleteGif,
 };
