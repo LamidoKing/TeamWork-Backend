@@ -117,6 +117,18 @@ const attemptPostArticle = async (title, article) => {
   }
 };
 
+const searchAtrribute = async (result, name) => {
+  const err = {
+    nouser: `${name} doent exist`,
+  };
+
+  if (!result.rows[0]) {
+    throw err.nouser;
+  }
+  return result;
+
+};
+
 module.exports = {
   encrypt,
   getToken,
@@ -125,4 +137,5 @@ module.exports = {
   gettUserId,
   processGifToUrl,
   attemptPostArticle,
+  searchAtrribute,
 };
