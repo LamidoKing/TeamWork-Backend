@@ -9,8 +9,11 @@ const editArticleQuery = 'UPDATE articles SET title = $1, article = $2 WHERE art
 
 const findArticleByIdQuery = 'SELECT * FROM articles WHERE article_id = $1';
 
+const deleteArticleQuery = 'DELETE FROM articles WHERE article_id = $1';
+
 module.exports = {
   postArticleQuery,
   editArticleQuery,
   findArticleByIdQuery,
+  deleteArticleQuery,
 };
