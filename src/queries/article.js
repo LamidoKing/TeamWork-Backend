@@ -11,9 +11,17 @@ const findArticleByIdQuery = 'SELECT * FROM articles WHERE article_id = $1';
 
 const deleteArticleQuery = 'DELETE FROM articles WHERE article_id = $1';
 
+const commentArticleQuery = `
+INSERT INTO comments(
+  user_id, comment, article_id
+  )
+  VALUES($1, $2, $3) returning *
+`;
+
 module.exports = {
   postArticleQuery,
   editArticleQuery,
   findArticleByIdQuery,
   deleteArticleQuery,
+  commentArticleQuery,
 };

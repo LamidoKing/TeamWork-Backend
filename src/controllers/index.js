@@ -1,6 +1,6 @@
 const { createUser, signIn } = require('./user');
 const { postGif, deleteGif } = require('./gif')
-const { postArticle, editArticle, deleteArticle } = require('./article')
+const { postArticle, editArticle, deleteArticle, commentArticle } = require('./article')
 
 module.exports = {
   createUser,
@@ -10,4 +10,5 @@ module.exports = {
   editArticle,
   deleteArticle,
   deleteGif,
+  commentArticle,
 };
