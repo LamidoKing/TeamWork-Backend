@@ -131,18 +131,52 @@ const searchAtrribute = async (result, name) => {
 const validateInputsFields = (fields, model) => {
   const err = {
     comment: {
-      noComment: 'must input your comment'
-    }
-  }
+      noComment: 'must input your comment',
+    },
+  };
 
-  if(model === 'comment') {
-    if(!fields.comment) {
+  if (model === 'comment') {
+    if (!fields.comment) {
       throw err.comment.noComment;
     }
     return true;
   }
+};
 
-}
+const formatData = async (data, dataName) => {
+  if (dataName === 'articles') {
+    return data.rows.map((article) => ({
+      id: article.article_id,
+      createdOn: article.created_on,
+      title: article.title,
+      article: article.article,
+      authorId: article.user_id,
+    }));
+  }
+
+  if (dataName === 'gifs') {
+    return data.rows.map((gif) => ({
+      id: gif.gif_id,
+      createdOn: gif.created_on,
+      title: gif.title,
+      gifUrl: gif.gif_url,
+      authorId: gif.user_id,
+    }));
+  }
+};
+
+const sortData = async (data) => data.sort((a, b) => {
+  const item1 = new Date(a.createdOn);
+  const item2 = new Date(b.createdOn);
+
+  if (item1 > item2) {
+    return -1;
+  }
+  if (item1 === item2) {
+    return 0;
+  }
+  return 1;
+});
 
 module.exports = {
   encrypt,
@@ -154,4 +188,6 @@ module.exports = {
   attemptPostArticle,
   searchAtrribute,
   validateInputsFields,
+  formatData,
+  sortData,
 };

@@ -18,10 +18,14 @@ INSERT INTO comments(
   VALUES($1, $2, $3) returning *
 `;
 
+const getAllArticles = 'SELECT * FROM articles ORDER BY created_on asc';
+
+
 module.exports = {
   postArticleQuery,
   editArticleQuery,
   findArticleByIdQuery,
   deleteArticleQuery,
   commentArticleQuery,
+  getAllArticles,
 };
