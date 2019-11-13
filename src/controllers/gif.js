@@ -1,6 +1,10 @@
-const { gettUserId, processGifToUrl, searchAtrribute, validateInputsFields } = require('../utils');
+const {
+  gettUserId, processGifToUrl, searchAtrribute, validateInputsFields, formatData,
+} = require('../utils');
 const db = require('../db');
-const { postGifQuery, findGifByIdQuery, deleteGifQuery, commentGifQuery } = require('../queries');
+const {
+  postGifQuery, findGifByIdQuery, deleteGifQuery, commentGifQuery, getAllGifCommentById,
+} = require('../queries');
 
 require('dotenv').config();
 
@@ -70,9 +74,9 @@ const commentGif = async (req, res, next) => {
   try {
     const fields = {
       comment: req.body.comment,
-    }
+    };
 
-    await validateInputsFields(fields, 'gif')
+    await validateInputsFields(fields, 'gif');
 
     const gifId = parseInt(req.params.id, 10);
 
@@ -100,7 +104,38 @@ const commentGif = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
+const getGifbyId = async (req, res, next) => {
+  try {
+    const gifId = parseInt(req.params.id, 10);
+
+    const gifs = await db.query(findGifByIdQuery, [gifId]);
+
+    await searchAtrribute(gifs, 'gif');
+
+    const comments = await db.query(getAllGifCommentById, [gifId]);
+
+    const formatedGifs = await formatData(gifs, 'gifs');
+    const formatedComment = await formatData(comments, 'comments');
+
+
+    const data = {
+      ...formatedGifs[0],
+      comments: [...formatedComment],
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(404).json({
       status: 'error',
       error,
     });
@@ -111,4 +146,5 @@ module.exports = {
   postGif,
   deleteGif,
   commentGif,
+  getGifbyId,
 };
