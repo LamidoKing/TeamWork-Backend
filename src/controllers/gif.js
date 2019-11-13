@@ -157,7 +157,7 @@ const flagGif = async (req, res, next) => {
 
     const result = await db.query(findGifByIdQuery, [gifId]);
 
-    const article = await searchAtrribute(result, 'gif');
+    const gif = await searchAtrribute(result, 'gif');
 
     const value = [userId, fields.flag, gifId];
 
@@ -166,10 +166,10 @@ const flagGif = async (req, res, next) => {
     const formatedFlag = await formatData(flag, 'flag');
 
     const data = {
-      message: 'article flag  successfully',
+      message: 'gif flag  successfully',
       ...formatedFlag[0],
-      articleTitle: article.title,
-      article: article.article,
+      gifTitle: gif.title,
+      gifUrl: gif.gif_url,
     };
 
     res.status(201).json({

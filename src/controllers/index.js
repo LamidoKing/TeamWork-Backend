@@ -5,7 +5,7 @@ const {
   commentArticle, GetArticlebyId, flagArticle
 } = require('./article')
 const { getFeed } = require('./feed');
-
+const { flagComment } = require('./flagcomment')
 
 module.exports = {
   createUser,
@@ -22,4 +22,5 @@ module.exports = {
   getGifbyId,
   flagArticle,
   flagGif,
+  flagComment,
 };

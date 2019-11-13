@@ -9,6 +9,8 @@ const {
   getAllArticleCommentById, flagArticleQuery
 } = require('./article');
 
+const { flagcommentQuery, findCommentByIdQuery } = require('./flagcomment')
+
 module.exports = {
   createUserQuery,
   findUserQuery,
@@ -26,5 +28,7 @@ module.exports = {
   getAllArticleCommentById,
   getAllGifCommentById,
   flagArticleQuery,
-  flagGifQuery
+  flagGifQuery,
+  flagcommentQuery,
+  findCommentByIdQuery,
 };
