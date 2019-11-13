@@ -2,7 +2,7 @@ const { createUser, signIn } = require('./user');
 const { postGif, deleteGif, commentGif, getGifbyId } = require('./gif')
 const { 
   postArticle, editArticle, deleteArticle,
-  commentArticle, GetArticlebyId,
+  commentArticle, GetArticlebyId, flagArticle
 } = require('./article')
 const { getFeed } = require('./feed');
 
@@ -20,4 +20,5 @@ module.exports = {
   getFeed,
   GetArticlebyId,
   getGifbyId,
+  flagArticle,
 };

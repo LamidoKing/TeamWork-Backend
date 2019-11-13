@@ -4,7 +4,7 @@ const {
 const db = require('../db');
 const {
   postArticleQuery, editArticleQuery, findArticleByIdQuery,
-  deleteArticleQuery, commentArticleQuery, getAllArticleCommentById,
+  deleteArticleQuery, commentArticleQuery, getAllArticleCommentById, flagArticleQuery,
 } = require('../queries');
 
 require('dotenv').config();
@@ -176,10 +176,52 @@ const GetArticlebyId = async (req, res, next) => {
   }
 };
 
+const flagArticle = async (req, res, next) => {
+  try {
+    const fields = {
+      flag: req.body.flag,
+    };
+
+    await validateInputsFields(fields, 'flag');
+
+    const articleId = parseInt(req.params.id, 10);
+
+    const userId = await gettUserId(req);
+
+    const result = await db.query(findArticleByIdQuery, [articleId]);
+
+    const article = await searchAtrribute(result, 'article');
+
+    const value = [userId, fields.flag, articleId];
+
+    const flag = await db.query(flagArticleQuery, value);
+
+    const formatedArticle = await formatData(flag, 'flag');
+
+    const data = {
+      message: 'article flag  successfully',
+      ...formatedArticle[0],
+      articleTitle: article.title,
+      article: article.article,
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
   postArticle,
   editArticle,
   deleteArticle,
   commentArticle,
   GetArticlebyId,
+  flagArticle,
 };

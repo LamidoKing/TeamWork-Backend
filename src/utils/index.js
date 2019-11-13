@@ -132,12 +132,20 @@ const validateInputsFields = (fields, model) => {
   const err = {
     comment: {
       noComment: 'must input your comment',
+      FlagError: 'must input flag and must be boolean' 
     },
   };
 
   if (model === 'comment') {
     if (!fields.comment) {
       throw err.comment.noComment;
+    }
+    return true;
+  }
+
+  if (model === 'flag') {
+    if (fields.flag === undefined || typeof fields.flag !== 'boolean') {
+      throw err.comment.FlagError;
     }
     return true;
   }
@@ -171,6 +179,16 @@ const formatData = async (data, dataName) => {
       authorId: comment.user_id,
     }));
   }
+
+  if (dataName === 'flag') {
+    return data.rows.map((flag) => ({
+      flagID: flag.flag_id,
+      userId: flag.user_id,
+      flag: flag.flag,
+      createdOn: flag.created_on,
+    }));
+  }
+
 };
 
 const sortData = async (data) => data.sort((a, b) => {
