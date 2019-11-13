@@ -22,6 +22,14 @@ const getAllArticles = 'SELECT * FROM articles ORDER BY created_on asc';
 
 const getAllArticleCommentById = 'SELECT * FROM public.comments WHERE article_id = $1';
 
+const flagArticleQuery = `
+INSERT INTO flags(
+  user_id, flag, article_id
+  )
+  VALUES($1, $2, $3) returning *
+`;
+
+
 module.exports = {
   postArticleQuery,
   editArticleQuery,
@@ -30,4 +38,5 @@ module.exports = {
   commentArticleQuery,
   getAllArticles,
   getAllArticleCommentById,
+  flagArticleQuery,
 };

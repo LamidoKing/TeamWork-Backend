@@ -3,7 +3,8 @@ const {
 } = require('../utils');
 const db = require('../db');
 const {
-  postGifQuery, findGifByIdQuery, deleteGifQuery, commentGifQuery, getAllGifCommentById,
+  postGifQuery, findGifByIdQuery, deleteGifQuery,
+  commentGifQuery, getAllGifCommentById, flagGifQuery,
 } = require('../queries');
 
 require('dotenv').config();
@@ -142,9 +143,52 @@ const getGifbyId = async (req, res, next) => {
   }
 };
 
+const flagGif = async (req, res, next) => {
+  try {
+    const fields = {
+      flag: req.body.flag,
+    };
+
+    await validateInputsFields(fields, 'flag');
+
+    const gifId = parseInt(req.params.id, 10);
+
+    const userId = await gettUserId(req);
+
+    const result = await db.query(findGifByIdQuery, [gifId]);
+
+    const gif = await searchAtrribute(result, 'gif');
+
+    const value = [userId, fields.flag, gifId];
+
+    const flag = await db.query(flagGifQuery, value);
+
+    const formatedFlag = await formatData(flag, 'flag');
+
+    const data = {
+      message: 'gif flag  successfully',
+      ...formatedFlag[0],
+      gifTitle: gif.title,
+      gifUrl: gif.gif_url,
+    };
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
+
 module.exports = {
   postGif,
   deleteGif,
   commentGif,
   getGifbyId,
+  flagGif,
 };

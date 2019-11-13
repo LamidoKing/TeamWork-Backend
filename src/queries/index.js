@@ -1,13 +1,15 @@
 const { createUserQuery, findUserQuery } = require('./user');
 const {
   postGifQuery, findGifByIdQuery, deleteGifQuery,
-  commentGifQuery, getAllGifs, getAllGifCommentById,
+  commentGifQuery, getAllGifs, getAllGifCommentById, flagGifQuery,
 } = require('./gif');
 const {
   postArticleQuery, editArticleQuery, findArticleByIdQuery,
   deleteArticleQuery, commentArticleQuery, getAllArticles,
-  getAllArticleCommentById,
+  getAllArticleCommentById, flagArticleQuery
 } = require('./article');
+
+const { flagcommentQuery, findCommentByIdQuery } = require('./flagcomment')
 
 module.exports = {
   createUserQuery,
@@ -25,4 +27,8 @@ module.exports = {
   getAllGifs,
   getAllArticleCommentById,
   getAllGifCommentById,
+  flagArticleQuery,
+  flagGifQuery,
+  flagcommentQuery,
+  findCommentByIdQuery,
 };

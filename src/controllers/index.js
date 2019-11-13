@@ -1,11 +1,11 @@
 const { createUser, signIn } = require('./user');
-const { postGif, deleteGif, commentGif, getGifbyId } = require('./gif')
+const { postGif, deleteGif, commentGif, getGifbyId, flagGif } = require('./gif')
 const { 
   postArticle, editArticle, deleteArticle,
-  commentArticle, GetArticlebyId,
+  commentArticle, GetArticlebyId, flagArticle
 } = require('./article')
 const { getFeed } = require('./feed');
-
+const { flagComment } = require('./flagcomment')
 
 module.exports = {
   createUser,
@@ -20,4 +20,7 @@ module.exports = {
   getFeed,
   GetArticlebyId,
   getGifbyId,
+  flagArticle,
+  flagGif,
+  flagComment,
 };
