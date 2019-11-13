@@ -15,9 +15,13 @@ INSERT INTO comments(
   VALUES($1, $2, $3) returning *
 `;
 
+const getAllGifs = 'SELECT * FROM gifs ORDER BY created_on asc';
+
+
 module.exports = {
   postGifQuery,
   deleteGifQuery,
   findGifByIdQuery,
   commentGifQuery,
+  getAllGifs,
 };
