@@ -17,6 +17,7 @@ INSERT INTO comments(
 
 const getAllGifs = 'SELECT * FROM gifs ORDER BY created_on asc';
 
+const getAllGifCommentById = 'SELECT * FROM comments WHERE gif_id = $1';
 
 module.exports = {
   postGifQuery,
@@ -24,4 +25,5 @@ module.exports = {
   findGifByIdQuery,
   commentGifQuery,
   getAllGifs,
+  getAllGifCommentById,
 };

@@ -151,11 +151,13 @@ const GetArticlebyId = async (req, res, next) => {
     const articleId = parseInt(req.params.id, 10);
 
     const articles = await db.query(findArticleByIdQuery, [articleId]);
+
+    await searchAtrribute(articles, 'article');
+
     const comments = await db.query(getAllArticleCommentById, [articleId]);
 
     const formatedArticle = await formatData(articles, 'articles');
     const formatedComment = await formatData(comments, 'comments');
-    
 
     const data = {
       ...formatedArticle[0],

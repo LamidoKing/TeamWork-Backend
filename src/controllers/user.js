@@ -42,7 +42,7 @@ const createUser = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       status: 'error',
       error,
     });

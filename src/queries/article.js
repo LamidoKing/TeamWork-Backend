@@ -20,7 +20,7 @@ INSERT INTO comments(
 
 const getAllArticles = 'SELECT * FROM articles ORDER BY created_on asc';
 
-const getAllArticleCommentById = 'SELECT * FROM public.comments WHERE article_id = $1'
+const getAllArticleCommentById = 'SELECT * FROM public.comments WHERE article_id = $1';
 
 module.exports = {
   postArticleQuery,
