@@ -5,6 +5,7 @@ const {
 const {
   postArticleQuery, editArticleQuery, findArticleByIdQuery,
   deleteArticleQuery, commentArticleQuery, getAllArticles,
+  getAllArticleCommentById,
 } = require('./article');
 
 module.exports = {
@@ -21,4 +22,5 @@ module.exports = {
   commentGifQuery,
   getAllArticles,
   getAllGifs,
+  getAllArticleCommentById,
 };

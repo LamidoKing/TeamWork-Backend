@@ -163,6 +163,14 @@ const formatData = async (data, dataName) => {
       authorId: gif.user_id,
     }));
   }
+
+  if (dataName === 'comments') {
+    return data.rows.map((comment) => ({
+      commentId: comment.comment_id,
+      comment: comment.comment,
+      authorId: comment.user_id,
+    }));
+  }
 };
 
 const sortData = async (data) => data.sort((a, b) => {

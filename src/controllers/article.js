@@ -1,9 +1,10 @@
 const {
- gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields 
+  gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields, formatData,
 } = require('../utils');
 const db = require('../db');
 const {
-  postArticleQuery, editArticleQuery, findArticleByIdQuery, deleteArticleQuery, commentArticleQuery,
+  postArticleQuery, editArticleQuery, findArticleByIdQuery,
+  deleteArticleQuery, commentArticleQuery, getAllArticleCommentById,
 } = require('../queries');
 
 require('dotenv').config();
@@ -144,9 +145,39 @@ const commentArticle = async (req, res, next) => {
   }
 };
 
+const GetArticlebyId = async (req, res, next) => {
+  try {
+
+    const articleId = parseInt(req.params.id, 10);
+
+    const articles = await db.query(findArticleByIdQuery, [articleId]);
+    const comments = await db.query(getAllArticleCommentById, [articleId]);
+
+    const formatedArticle = await formatData(articles, 'articles');
+    const formatedComment = await formatData(comments, 'comments');
+    
+
+    const data = {
+      ...formatedArticle[0],
+      comments: [...formatedComment],
+    }
+
+    res.status(201).json({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
+};
+
 module.exports = {
   postArticle,
   editArticle,
   deleteArticle,
   commentArticle,
+  GetArticlebyId,
 };
