@@ -1,6 +1,6 @@
 const Router = require('express-promise-router');
 const {
-  postGif, deleteGif, commentGif, getGifbyId,
+  postGif, deleteGif, commentGif, getGifbyId, flagGif
 } = require('../controllers');
 const { auth, multerUploads } = require('../middleware');
 const { cloudinary } = require('../config');
@@ -11,5 +11,6 @@ router.post('/gifs', auth, cloudinary, multerUploads, postGif);
 router.post('/gifs/:id/comment', auth, commentGif);
 router.delete('/gifs/:id', auth, deleteGif);
 router.get('/gifs/:id', auth, getGifbyId);
+router.post('/gifs/:id/flag', auth, flagGif);
 
 module.exports = router;

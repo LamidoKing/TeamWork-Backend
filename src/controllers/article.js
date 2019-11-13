@@ -147,7 +147,6 @@ const commentArticle = async (req, res, next) => {
 
 const GetArticlebyId = async (req, res, next) => {
   try {
-
     const articleId = parseInt(req.params.id, 10);
 
     const articles = await db.query(findArticleByIdQuery, [articleId]);
@@ -162,7 +161,7 @@ const GetArticlebyId = async (req, res, next) => {
     const data = {
       ...formatedArticle[0],
       comments: [...formatedComment],
-    }
+    };
 
     res.status(201).json({
       status: 'success',

@@ -19,6 +19,13 @@ const getAllGifs = 'SELECT * FROM gifs ORDER BY created_on asc';
 
 const getAllGifCommentById = 'SELECT * FROM comments WHERE gif_id = $1';
 
+const flagGifQuery = `
+INSERT INTO flags(
+  user_id, flag, gif_id
+  )
+  VALUES($1, $2, $3) returning *
+`;
+
 module.exports = {
   postGifQuery,
   deleteGifQuery,
@@ -26,4 +33,5 @@ module.exports = {
   commentGifQuery,
   getAllGifs,
   getAllGifCommentById,
+  flagGifQuery,
 };
