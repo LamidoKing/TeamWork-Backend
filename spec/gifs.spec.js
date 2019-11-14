@@ -1,6 +1,7 @@
 const frisby = require('frisby');
 
 const { Joi } = frisby;
+const { auth } = require('../src/middleware');
 
 frisby.globalSetup({
   request: {
@@ -37,7 +38,7 @@ beforeEach((done) => {
 describe('Gifs Endpoints', () => {
   it('POST / gifs', (done) => {
     frisby
-      .post(`${baseUrl}gifs`, gif)
+      .post(`${baseUrl}gifs`, auth, gif)
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -54,7 +55,7 @@ describe('Gifs Endpoints', () => {
 
   it('POST / gifs/:id/comment', (done) => {
     frisby
-      .post(`${baseUrl}gifs/:id ${gif.gifId}/comment`, { comment: comment.comment })
+      .post(`${baseUrl}gifs/:id ${gif.gifId}/comment`, auth, { comment: comment.comment })
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -70,7 +71,7 @@ describe('Gifs Endpoints', () => {
 
   it('DELETE / gifs/:id', (done) => {
     frisby
-      .del(`${baseUrl}gifs/:${gif.gifId}`)
+      .del(`${baseUrl}gifs/:${gif.gifId}`, auth)
       .expect('status', 200)
       .expect('json', {
         status: 'success',
@@ -84,7 +85,7 @@ describe('Gifs Endpoints', () => {
 
   it('GET / gifs/:id', (done) => {
     frisby
-      .get(`${baseUrl}gifs/:${gif.gifId}`)
+      .get(`${baseUrl}gifs/:${gif.gifId}`, auth)
       .expect('status', 200)
       .expect('json', {
         status: 'success',

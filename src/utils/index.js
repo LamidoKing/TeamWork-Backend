@@ -17,14 +17,6 @@ const encrypt = async (password) => {
   throw err;
 };
 
-const decrypt = async (user, password) => {
-  const err = 'password is not correct';
-  const { valid } = await bcrypt.compare(password, user.password);
-  if (!valid) {
-    throw err;
-  }
-};
-
 const getToken = async (userId, rolenumber) => {
   const token = await jwt.sign({ userId, rolenumber }, `${process.env.RANDOM_TOKEN}`, { expiresIn: '24h' });
   return token;
@@ -37,7 +29,7 @@ const attemptCreateUser = async (email) => {
     emptyEmail: 'Email field cannot be empty',
   };
 
-  const isvalid = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  const isvalid = /^([a-zA-Z0-9_-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
   const { rows } = await db.query(findUserQuery, [email]);
 
@@ -115,6 +107,7 @@ const attemptPostArticle = async (title, article) => {
   if (!article) {
     throw err.noArticle;
   }
+  return true;
 };
 
 const searchAtrribute = async (result, name) => {
@@ -132,7 +125,7 @@ const validateInputsFields = (fields, model) => {
   const err = {
     comment: {
       noComment: 'must input your comment',
-      FlagError: 'must input flag and must be boolean' 
+      FlagError: 'must input flag and must be boolean',
     },
   };
 
@@ -149,6 +142,7 @@ const validateInputsFields = (fields, model) => {
     }
     return true;
   }
+  return true;
 };
 
 const formatData = async (data, dataName) => {
@@ -188,7 +182,7 @@ const formatData = async (data, dataName) => {
       createdOn: flag.created_on,
     }));
   }
-
+  return true;
 };
 
 const sortData = async (data) => data.sort((a, b) => {

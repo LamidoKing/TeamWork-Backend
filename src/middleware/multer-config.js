@@ -9,7 +9,8 @@ const multerUploads = multer({ storage }).single('gif');
 const dUri = new Datauri();
 
 const dataUri = (req) => {
-  return dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
+  const uri = dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
+  return uri;
 };
 
 module.exports = { multerUploads, dataUri };

@@ -1,21 +1,21 @@
 
 const {
-  gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields, formatData,
+  gettUserId, searchAtrribute, validateInputsFields, formatData,
 } = require('../utils');
 const db = require('../db');
 const {
-  flagcommentQuery, findCommentByIdQuery
+  flagcommentQuery, findCommentByIdQuery,
 } = require('../queries');
 
 require('dotenv').config();
 
-const flagComment = async (req, res, next) => {
+const flagComment = async (req, res) => {
   try {
     const fields = {
       flag: req.body.flag,
     };
 
-    await validateInputsFields(fields, 'flag');
+    validateInputsFields(fields, 'flag');
 
     const commentId = parseInt(req.params.commentId, 10);
 
@@ -38,7 +38,7 @@ const flagComment = async (req, res, next) => {
       comment: comment.comment,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });

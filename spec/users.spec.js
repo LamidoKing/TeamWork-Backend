@@ -2,10 +2,12 @@ const frisby = require('frisby');
 
 const { Joi } = frisby;
 
+const { auth } = require('../src/middleware');
+
 frisby.globalSetup({
   request: {
     headers: {
-      Authorization: `Basic ${Buffer.from('username:password').toString('base64')}`,
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsInJvbGVudW1iZXIiOiIxOTE5IiwiaWF0IjoxNTczNzMxNjIxLCJleHAiOjE1NzM4MTgwMjF9.4_KeXG7NQ4MPGmxLH3WYthpBWRmgRDUe8tRP5qPPcwc',
       'Content-Type': 'application/json',
     },
   },
@@ -21,8 +23,8 @@ beforeEach((done) => {
     userId: 1,
     firstName: 'lmd',
     lastName: 'tj',
-    email: 'lamdio6767676676@dfghf.com',
-    password: 'fhghdkh',
+    email: 'andela@gmail.com',
+    password: 'lamidotijjani',
     gender: 'male',
     jobRole: 'sfsf',
     department: 'sfsds',
@@ -35,7 +37,7 @@ beforeEach((done) => {
 describe('Auth APIs Endpoints', () => {
   it('POST / create-user', (done) => {
     frisby
-      .post(`${baseUrl}create-user`, user)
+      .post(`${baseUrl}create-user`, auth, user)
       .expect('status', 201)
       .expect('json', {
         status: 'success',

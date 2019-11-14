@@ -1,5 +1,5 @@
 const { authAdmin, auth } = require('./auth');
-const {multerUploads, dataUri } = require('./multer-config.js')
+const { multerUploads, dataUri } = require('./multer-config.js');
 
 module.exports = {
   authAdmin,

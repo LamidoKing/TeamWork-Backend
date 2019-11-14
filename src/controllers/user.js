@@ -6,7 +6,7 @@ const { createUserQuery, findUserQuery } = require('../queries');
 
 require('dotenv').config();
 
-const createUser = async (req, res, next) => {
+const createUser = async (req, res) => {
   try {
     const {
       admin, firstname, lastname, gender, jobrole, department, address,
@@ -18,7 +18,10 @@ const createUser = async (req, res, next) => {
 
     const rolenumber = admin ? process.env.ADMIN : 1;
 
-    const value = [email, password, rolenumber, firstname, lastname, gender, jobrole, department, address];
+    const value = [
+      email, password, rolenumber, firstname,
+      lastname, gender, jobrole, department, address,
+    ];
 
     const { rows } = await db.query(createUserQuery, value);
 
@@ -37,7 +40,7 @@ const createUser = async (req, res, next) => {
       address: rows[0].address,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
@@ -49,7 +52,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
-const signIn = async (req, res, next) => {
+const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -64,7 +67,7 @@ const signIn = async (req, res, next) => {
       token,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });

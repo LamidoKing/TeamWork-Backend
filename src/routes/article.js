@@ -1,5 +1,6 @@
 const Router = require('express-promise-router');
-const { postArticle, editArticle, deleteArticle,
+const {
+  postArticle, editArticle, deleteArticle,
   commentArticle, GetArticlebyId, flagArticle, flagComment,
 } = require('../controllers');
 const { auth } = require('../middleware');
