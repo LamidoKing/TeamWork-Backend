@@ -105,9 +105,7 @@ const deleteArticle = async (req, res) => {
 
 const commentArticle = async (req, res) => {
   try {
-    const fields = {
-      comment: req.body.comment,
-    };
+    const fields = req.body.comment;
 
     await validateInputsFields(fields, 'comment');
 
@@ -120,7 +118,7 @@ const commentArticle = async (req, res) => {
     const article = await searchAtrribute(result, 'article');
 
 
-    const value = [userId, fields.comment, articleId];
+    const value = [userId, fields, articleId];
 
     const { rows } = await db.query(commentArticleQuery, value);
 
@@ -177,9 +175,7 @@ const GetArticlebyId = async (req, res) => {
 
 const flagArticle = async (req, res) => {
   try {
-    const fields = {
-      flag: req.body.flag,
-    };
+    const fields = req.body.flag;
 
     await validateInputsFields(fields, 'flag');
 
@@ -191,7 +187,7 @@ const flagArticle = async (req, res) => {
 
     const article = await searchAtrribute(result, 'article');
 
-    const value = [userId, fields.flag, articleId];
+    const value = [userId, fields, articleId];
 
     const flag = await db.query(flagArticleQuery, value);
 

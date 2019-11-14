@@ -1,5 +1,5 @@
 const {
-  encrypt, attemptCreateUser, attemptSignIn, getToken,
+  encrypt, attemptCreateUser, attemptSignIn, getToken, formatData,
 } = require('../utils');
 const db = require('../db');
 const { createUserQuery, findUserQuery } = require('../queries');
@@ -23,21 +23,15 @@ const createUser = async (req, res) => {
       lastname, gender, jobrole, department, address,
     ];
 
-    const { rows } = await db.query(createUserQuery, value);
+    const rows = await db.query(createUserQuery, value);
+    const formatedData = await formatData(rows, 'create-user');
 
-    const token = await getToken(rows[0].user_id, rolenumber);
+    const token = await getToken(formatedData.userId, rolenumber);
 
     const data = {
       message: 'User added successfully!',
       token,
-      userId: rows[0].user_id,
-      email: rows[0].email,
-      firstName: rows[0].firstname,
-      lastName: rows[0].lastName,
-      gender: rows[0].gender,
-      jobRole: rows[0].jobrole,
-      department: rows[0].department,
-      address: rows[0].address,
+      ...formatedData[0],
     };
 
     return res.status(201).json({

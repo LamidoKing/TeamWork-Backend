@@ -11,9 +11,7 @@ require('dotenv').config();
 
 const postGif = async (req, res) => {
   try {
-    const {
-      title,
-    } = req.body;
+    const { title } = req.body;
 
     const userId = await gettUserId(req);
 
@@ -145,9 +143,7 @@ const getGifbyId = async (req, res) => {
 
 const flagGif = async (req, res) => {
   try {
-    const fields = {
-      flag: req.body.flag,
-    };
+    const fields = req.body.flag;
 
     await validateInputsFields(fields, 'flag');
 
@@ -159,7 +155,7 @@ const flagGif = async (req, res) => {
 
     const gif = await searchAtrribute(result, 'gif');
 
-    const value = [userId, fields.flag, gifId];
+    const value = [userId, fields, gifId];
 
     const flag = await db.query(flagGifQuery, value);
 

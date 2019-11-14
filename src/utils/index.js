@@ -130,14 +130,14 @@ const validateInputsFields = (fields, model) => {
   };
 
   if (model === 'comment') {
-    if (!fields.comment) {
+    if (!fields) {
       throw err.comment.noComment;
     }
     return true;
   }
 
   if (model === 'flag') {
-    if (fields.flag === undefined || typeof fields.flag !== 'boolean') {
+    if (fields === undefined || typeof fields !== 'boolean') {
       throw err.comment.FlagError;
     }
     return true;
@@ -180,6 +180,19 @@ const formatData = async (data, dataName) => {
       userId: flag.user_id,
       flag: flag.flag,
       createdOn: flag.created_on,
+    }));
+  }
+
+  if (dataName === 'create-user') {
+    return data.rows.map((field) => ({
+      userId: field.user_id,
+      email: field.email,
+      firstName: field.firstname,
+      lastName: field.lastName,
+      gender: field.gender,
+      jobRole: field.jobrole,
+      department: field.department,
+      address: field.address,
     }));
   }
   return true;

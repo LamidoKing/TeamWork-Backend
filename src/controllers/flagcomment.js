@@ -11,9 +11,7 @@ require('dotenv').config();
 
 const flagComment = async (req, res) => {
   try {
-    const fields = {
-      flag: req.body.flag,
-    };
+    const fields = req.body.flag;
 
     validateInputsFields(fields, 'flag');
 
@@ -25,7 +23,7 @@ const flagComment = async (req, res) => {
 
     const comment = await searchAtrribute(result, 'comment');
 
-    const value = [userId, fields.flag, commentId];
+    const value = [userId, fields, commentId];
 
     const flag = await db.query(flagcommentQuery, value);
 
