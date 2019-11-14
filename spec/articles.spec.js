@@ -3,6 +3,8 @@ const frisby = require('frisby');
 
 const { Joi } = frisby;
 
+const { auth } = require('../src/middleware');
+
 frisby.globalSetup({
   request: {
     headers: {
@@ -37,7 +39,7 @@ beforeEach((done) => {
 describe('Articles Endpoints', () => {
   it('POST / articles', (done) => {
     frisby
-      .post(`${baseUrl}articles`, article)
+      .post(`${baseUrl}articles`, auth, article)
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -52,7 +54,7 @@ describe('Articles Endpoints', () => {
 
   it('PATCH / articles/:id', (done) => {
     frisby
-      .put(`${baseUrl}articles/:${article.articleId}`, { title: article.title, article: article.article })
+      .put(`${baseUrl}articles/:${article.articleId}`, auth, { title: article.title, article: article.article })
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -67,7 +69,7 @@ describe('Articles Endpoints', () => {
 
   it('POST / articles/:id/comment', (done) => {
     frisby
-      .post(`${baseUrl}articles/:id ${article.articleId}/comment`, { comment: comment.comment })
+      .post(`${baseUrl}articles/:id ${article.articleId}/comment`, auth, { comment: comment.comment })
       .expect('status', 201)
       .expect('json', {
         status: 'success',
@@ -98,7 +100,7 @@ describe('Articles Endpoints', () => {
 
   it('GET / articles/:id', (done) => {
     frisby
-      .get(`${baseUrl}articles/:${article.articleId}`)
+      .get(`${baseUrl}articles/:${article.articleId}`, auth)
       .expect('status', 200)
       .expect('json', {
         status: 'success',

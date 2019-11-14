@@ -1,6 +1,6 @@
 const Router = require('express-promise-router');
 const { createUser, signIn } = require('../controllers');
-const { auth, authAdmin } = require('../middleware/auth');
+const { authAdmin } = require('../middleware/auth');
 
 const router = new Router();
 

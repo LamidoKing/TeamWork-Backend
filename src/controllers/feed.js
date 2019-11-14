@@ -4,7 +4,7 @@ const { getAllArticles, getAllGifs } = require('../queries');
 
 require('dotenv').config();
 
-const getFeed = async (req, res, next) => {
+const getFeed = async (req, res) => {
   try {
     const articles = await db.query(getAllArticles);
     const gifs = await db.query(getAllGifs);
@@ -16,12 +16,12 @@ const getFeed = async (req, res, next) => {
 
     const sortedData = await sortData(data);
 
-    res.status(201).json({
+    return res.status(200).json({
       status: 'success',
       data: sortedData,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });

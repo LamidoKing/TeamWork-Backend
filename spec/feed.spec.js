@@ -1,6 +1,7 @@
 const frisby = require('frisby');
 
 const { Joi } = frisby;
+const { auth } = require('../src/middleware');
 
 frisby.globalSetup({
   request: {
@@ -22,7 +23,7 @@ beforeEach((done) => {
 describe('Feed Endpoints', () => {
   it('GET / feed', (done) => {
     frisby
-      .get(`${baseUrl}feed`)
+      .get(`${baseUrl}feed`, auth)
       .expect('status', 200)
       .expect('json', {
         status: 'success',

@@ -9,7 +9,7 @@ const {
 
 require('dotenv').config();
 
-const postArticle = async (req, res, next) => {
+const postArticle = async (req, res) => {
   try {
     const { title, article } = req.body;
 
@@ -29,19 +29,19 @@ const postArticle = async (req, res, next) => {
       createdOn: rows[0].created_on,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
   }
 };
 
-const editArticle = async (req, res, next) => {
+const editArticle = async (req, res) => {
   try {
     const { title, article } = req.body;
 
@@ -63,7 +63,7 @@ const editArticle = async (req, res, next) => {
       article: rows[0].article,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
@@ -75,7 +75,7 @@ const editArticle = async (req, res, next) => {
   }
 };
 
-const deleteArticle = async (req, res, next) => {
+const deleteArticle = async (req, res) => {
   try {
     const articleId = parseInt(req.params.id, 10);
 
@@ -91,7 +91,7 @@ const deleteArticle = async (req, res, next) => {
       message: 'Article successfully deleted',
     };
 
-    res.status(201).json({
+    return res.status(200).json({
       status: 'success',
       data,
     });
@@ -103,7 +103,7 @@ const deleteArticle = async (req, res, next) => {
   }
 };
 
-const commentArticle = async (req, res, next) => {
+const commentArticle = async (req, res) => {
   try {
     const fields = {
       comment: req.body.comment,
@@ -133,19 +133,19 @@ const commentArticle = async (req, res, next) => {
       createdOn: rows[0].created_on,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
   }
 };
 
-const GetArticlebyId = async (req, res, next) => {
+const GetArticlebyId = async (req, res) => {
   try {
     const articleId = parseInt(req.params.id, 10);
 
@@ -163,19 +163,19 @@ const GetArticlebyId = async (req, res, next) => {
       comments: [...formatedComment],
     };
 
-    res.status(201).json({
+    return res.status(200).json({
       status: 'success',
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
   }
 };
 
-const flagArticle = async (req, res, next) => {
+const flagArticle = async (req, res) => {
   try {
     const fields = {
       flag: req.body.flag,
@@ -204,7 +204,7 @@ const flagArticle = async (req, res, next) => {
       article: article.article,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });

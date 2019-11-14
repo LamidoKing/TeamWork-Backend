@@ -9,5 +9,5 @@ const findCommentByIdQuery = 'SELECT * from comments WHERE comment_id=$1';
 
 module.exports = {
   flagcommentQuery,
-  findCommentByIdQuery
+  findCommentByIdQuery,
 };

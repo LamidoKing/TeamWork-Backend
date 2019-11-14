@@ -6,10 +6,10 @@ const {
 const {
   postArticleQuery, editArticleQuery, findArticleByIdQuery,
   deleteArticleQuery, commentArticleQuery, getAllArticles,
-  getAllArticleCommentById, flagArticleQuery
+  getAllArticleCommentById, flagArticleQuery,
 } = require('./article');
 
-const { flagcommentQuery, findCommentByIdQuery } = require('./flagcomment')
+const { flagcommentQuery, findCommentByIdQuery } = require('./flagcomment');
 
 module.exports = {
   createUserQuery,

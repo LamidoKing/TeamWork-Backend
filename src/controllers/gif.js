@@ -9,7 +9,7 @@ const {
 
 require('dotenv').config();
 
-const postGif = async (req, res, next) => {
+const postGif = async (req, res) => {
   try {
     const {
       title,
@@ -31,19 +31,19 @@ const postGif = async (req, res, next) => {
       gifUrl: rows[0].gif_url,
       createdOn: rows[0].created_on,
     };
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
   }
 };
 
-const deleteGif = async (req, res, next) => {
+const deleteGif = async (req, res) => {
   try {
     const gifId = parseInt(req.params.id, 10);
 
@@ -59,7 +59,7 @@ const deleteGif = async (req, res, next) => {
       message: 'Gif successfully deleted',
     };
 
-    res.status(201).json({
+    return res.status(200).json({
       status: 'success',
       data,
     });
@@ -71,7 +71,7 @@ const deleteGif = async (req, res, next) => {
   }
 };
 
-const commentGif = async (req, res, next) => {
+const commentGif = async (req, res) => {
   try {
     const fields = {
       comment: req.body.comment,
@@ -100,7 +100,7 @@ const commentGif = async (req, res, next) => {
       createdOn: rows[0].created_on,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });
@@ -112,7 +112,7 @@ const commentGif = async (req, res, next) => {
   }
 };
 
-const getGifbyId = async (req, res, next) => {
+const getGifbyId = async (req, res) => {
   try {
     const gifId = parseInt(req.params.id, 10);
 
@@ -131,19 +131,19 @@ const getGifbyId = async (req, res, next) => {
       comments: [...formatedComment],
     };
 
-    res.status(201).json({
+    return res.status(200).json({
       status: 'success',
       data,
     });
   } catch (error) {
-    return res.status(404).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
   }
 };
 
-const flagGif = async (req, res, next) => {
+const flagGif = async (req, res) => {
   try {
     const fields = {
       flag: req.body.flag,
@@ -172,7 +172,7 @@ const flagGif = async (req, res, next) => {
       gifUrl: gif.gif_url,
     };
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data,
     });

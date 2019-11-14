@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { userRoutes, gifRoutes, articleRoutes, feedRoutes } = require('./routes');
+const {
+  userRoutes, gifRoutes, articleRoutes, feedRoutes,
+} = require('./routes');
 
 const app = express();
 
