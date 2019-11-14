@@ -8,7 +8,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "lint": "eslint 'src/**/*.js' 'spec/**/*.js' --fix",
-    "test": "./node_modules/.bin/jasmine-node spec"
+    "test": "./node_modules/.bin/jasmine-node spec",
+    "cover": "istanbul cover jasmine-node --captureExceptions spec/ && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
@@ -23,6 +24,7 @@
     "pg": "^7.12.1"
   },
   "devDependencies": {
+    "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
@@ -30,6 +32,7 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "frisby": "^2.1.2",
+    "istanbul": "^0.4.5",
     "jasmine-node": "^3.0.0"
   }
 }
