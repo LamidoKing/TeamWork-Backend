@@ -59,7 +59,7 @@ const signIn = async (req, res) => {
     const data = {
       message: 'User account successfully created',
       token,
-      ...user.rows[0],
+      userId: user.user_id,
     };
 
     return res.status(201).json({

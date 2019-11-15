@@ -10,7 +10,7 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "lint": "eslint 'src/**/*.js' 'spec/**/*.js' --fix",
     "test": "./node_modules/.bin/jasmine-node spec",
     "cover": "istanbul cover jasmine-node --captureExceptions spec/ && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
