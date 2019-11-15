@@ -161,7 +161,7 @@ const formatData = async (data, dataName) => {
       id: gif.gif_id,
       createdOn: gif.created_on,
       title: gif.title,
-      gifUrl: gif.gif_url,
+      imageUrl: gif.gif_url,
       authorId: gif.user_id,
     }));
   }
