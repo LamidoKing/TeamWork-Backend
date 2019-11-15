@@ -23,8 +23,8 @@ const postGif = async (req, res) => {
 
     const data = {
       message: 'GIF image successfully posted',
-      gifId: rows[0].gifid,
       userId: rows[0].user_id,
+      gifId: rows[0].gifid,
       title: rows[0].title,
       gifUrl: rows[0].gif_url,
       createdOn: rows[0].created_on,
@@ -54,7 +54,7 @@ const deleteGif = async (req, res) => {
     await db.query(deleteGifQuery, value);
 
     const data = {
-      message: 'Gif successfully deleted',
+      message: 'gif post successfully deleted',
     };
 
     return res.status(200).json({
@@ -91,11 +91,11 @@ const commentGif = async (req, res) => {
     const { rows } = await db.query(commentGifQuery, value);
 
     const data = {
-      message: 'Comment successfully created',
-      commentID: rows[0].comment_id,
+      message: 'comment successfully created',
       gifTitle: gif.title,
       comment: rows[0].comment,
       createdOn: rows[0].created_on,
+      commentID: rows[0].comment_id,
     };
 
     return res.status(201).json({

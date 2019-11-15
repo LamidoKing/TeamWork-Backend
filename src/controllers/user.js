@@ -29,7 +29,7 @@ const createUser = async (req, res) => {
     const token = await getToken(formatedData.userId, rolenumber);
 
     const data = {
-      message: 'User added successfully!',
+      message: 'User account successfully created',
       token,
       ...formatedData[0],
     };
@@ -57,8 +57,9 @@ const signIn = async (req, res) => {
     const token = await getToken(user.user_id, user.rolenumber);
 
     const data = {
-      message: 'Signin successfully!',
+      message: 'User account successfully created',
       token,
+      ...user.rows[0],
     };
 
     return res.status(201).json({

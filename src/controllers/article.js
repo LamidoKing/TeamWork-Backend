@@ -58,7 +58,7 @@ const editArticle = async (req, res) => {
     const { rows } = await db.query(editArticleQuery, value);
 
     const data = {
-      message: 'Article successfully Edited',
+      message: 'Article successfully updated',
       title: rows[0].title,
       article: rows[0].article,
     };
@@ -124,11 +124,11 @@ const commentArticle = async (req, res) => {
 
     const data = {
       message: 'Comment successfully created',
-      commentID: rows[0].comment_id,
       articleTitle: article.title,
       article: article.article,
       comment: rows[0].comment,
       createdOn: rows[0].created_on,
+      commentID: rows[0].comment_id,
     };
 
     return res.status(201).json({
@@ -194,7 +194,7 @@ const flagArticle = async (req, res) => {
     const formatedArticle = await formatData(flag, 'flag');
 
     const data = {
-      message: 'article flag  successfully',
+      message: 'article flag successfully',
       ...formatedArticle[0],
       articleTitle: article.title,
       article: article.article,
