@@ -5,8 +5,12 @@
   "repository": "git@github.com:LamidoKing/teamwork-backend.git",
   "author": "lamido <kinglamido@gmail.com>",
   "license": "MIT",
+    "engines": {
+    "node": "12.13.0",
+    "yarn": "1.x"
+  },
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "lint": "eslint 'src/**/*.js' 'spec/**/*.js' --fix",
     "test": "./node_modules/.bin/jasmine-node spec",
     "cover": "istanbul cover jasmine-node --captureExceptions spec/ && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
