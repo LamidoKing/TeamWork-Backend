@@ -39,7 +39,7 @@ const createUser = async (req, res) => {
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
@@ -67,7 +67,7 @@ const signIn = async (req, res) => {
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: 'error',
       error,
     });
