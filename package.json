@@ -5,7 +5,7 @@
   "repository": "git@github.com:LamidoKing/teamwork-backend.git",
   "author": "lamido <kinglamido@gmail.com>",
   "license": "MIT",
-    "engines": {
+  "engines": {
     "node": "12.13.0",
     "yarn": "1.x"
   },
@@ -25,7 +25,9 @@
     "express-promise-router": "^3.0.3",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
-    "pg": "^7.12.1"
+    "pg": "^7.12.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.2"
   },
   "devDependencies": {
     "coveralls": "^3.0.7",

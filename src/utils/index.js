@@ -22,7 +22,7 @@ const getToken = async (userId, rolenumber) => {
   return token;
 };
 
-const attemptCreateUser = async (email) => {
+const attemptCreateUser = async (email, res) => {
   const err = {
     emailTaken: 'email has been taken',
     invalidEmail: 'invalid email check and try again',
@@ -35,14 +35,17 @@ const attemptCreateUser = async (email) => {
 
   if (email) {
     if (rows.length > 0) {
+      res.status(401);
       throw err.emailTaken;
     }
 
     if (!isvalid.test(email)) {
+      res.status(401);
       throw err.invalidEmail;
     }
   }
   if (!email) {
+    res.status(401);
     throw err.emptyEmail;
   }
   return email;
