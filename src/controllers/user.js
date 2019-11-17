@@ -12,7 +12,7 @@ const createUser = async (req, res) => {
       admin, firstname, lastname, gender, jobrole, department, address,
     } = req.body;
 
-    const email = await attemptCreateUser(req.body.email);
+    const email = await attemptCreateUser(req.body.email, res);
 
     const password = await encrypt(req.body.password);
 
@@ -57,7 +57,6 @@ const signIn = async (req, res) => {
     const token = await getToken(user.user_id, user.rolenumber);
 
     const data = {
-      message: 'User account successfully created',
       token,
       userId: user.user_id,
     };
