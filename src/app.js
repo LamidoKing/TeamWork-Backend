@@ -1,24 +1,34 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { notFound, serverError } = require('./middleware');
 const {
   userRoutes, gifRoutes, articleRoutes, feedRoutes, docsRoutes,
 } = require('./routes');
 
-const app = express();
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
-});
+const createApp = () => {
+  const app = express();
 
-app.use(bodyParser.json());
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+  });
 
-app.use('/api/v1/auth', userRoutes);
-app.use('/api/v1', gifRoutes);
-app.use('/api/v1', articleRoutes);
-app.use('/api/v1', feedRoutes);
-app.use('/api/v1', docsRoutes);
+  app.use(bodyParser.json());
 
-module.exports = app;
+  app.use('/api/v1/auth', userRoutes);
+  app.use('/api/v1', gifRoutes);
+  app.use('/api/v1', articleRoutes);
+  app.use('/api/v1', feedRoutes);
+  app.use('/api/v1', docsRoutes);
+
+  app.use(notFound);
+
+  app.use(serverError);
+
+  return app;
+};
+
+module.exports = createApp;

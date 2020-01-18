@@ -1,215 +1,197 @@
-const {
-  gettUserId, attemptPostArticle, searchAtrribute, validateInputsFields, formatData,
-} = require('../utils');
+const { formatData, gettUserId } = require('../utils');
+const { searchAtrribute } = require('../auth');
 const db = require('../db');
 const {
-  postArticleQuery, editArticleQuery, findArticleByIdQuery,
-  deleteArticleQuery, commentArticleQuery, getAllArticleCommentById, flagArticleQuery,
+  postArticleQuery,
+  editArticleQuery,
+  findArticleByIdQuery,
+  deleteArticleQuery,
+  commentArticleQuery,
+  getAllArticleCommentById,
+  flagArticleQuery,
 } = require('../queries');
+const {
+  articleSchema,
+  articleIdShema,
+  commentSchema,
+  flagShema,
+  validate,
+} = require('../validation');
 
 require('dotenv').config();
 
+
 const postArticle = async (req, res) => {
-  try {
-    const { title, article } = req.body;
+  await validate(articleSchema, req.body);
 
-    await attemptPostArticle(title, article);
+  const { title, article } = req.body;
 
-    const userId = await gettUserId(req);
+  const userId = await gettUserId(req);
 
-    const value = [title, userId, article];
+  const value = [title, userId, article];
 
-    const { rows } = await db.query(postArticleQuery, value);
+  const { rows } = await db.query(postArticleQuery, value);
 
-    const data = {
-      message: 'Article successfully posted',
-      articleId: rows[0].article_id,
-      userId: rows[0].user_id,
-      title: rows[0].title,
-      createdOn: rows[0].created_on,
-    };
+  const data = {
+    message: 'Article successfully posted',
+    articleId: rows[0].article_id,
+    userId: rows[0].user_id,
+    title: rows[0].title,
+    createdOn: rows[0].created_on,
+  };
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const editArticle = async (req, res) => {
-  try {
-    const { title, article } = req.body;
+  const articleId = parseInt(req.params.id, 10);
 
-    const articleId = parseInt(req.params.id, 10);
+  await validate(articleIdShema, { articleId });
 
-    await attemptPostArticle(title, article);
+  await validate(articleSchema, req.body);
 
-    const result = await db.query(findArticleByIdQuery, [articleId]);
+  const { title, article } = req.body;
 
-    await searchAtrribute(result, 'article');
 
-    const value = [title, article, articleId];
+  const result = await db.query(findArticleByIdQuery, [articleId]);
 
-    const { rows } = await db.query(editArticleQuery, value);
+  await searchAtrribute(result, 'article');
 
-    const data = {
-      message: 'Article successfully updated',
-      title: rows[0].title,
-      article: rows[0].article,
-    };
+  const value = [title, article, articleId];
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const { rows } = await db.query(editArticleQuery, value);
+
+  const data = {
+    message: 'Article successfully updated',
+    title: rows[0].title,
+    article: rows[0].article,
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const deleteArticle = async (req, res) => {
-  try {
-    const articleId = parseInt(req.params.id, 10);
+  const articleId = parseInt(req.params.id, 10);
 
-    const result = await db.query(findArticleByIdQuery, [articleId]);
+  await validate(articleIdShema, { articleId });
 
-    await searchAtrribute(result, 'article');
+  const result = await db.query(findArticleByIdQuery, [articleId]);
 
-    const value = [articleId];
+  await searchAtrribute(result, 'article');
 
-    await db.query(deleteArticleQuery, value);
+  const value = [articleId];
 
-    const data = {
-      message: 'Article successfully deleted',
-    };
+  await db.query(deleteArticleQuery, value);
 
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'Article successfully deleted',
+  };
+
+  return res.status(200).json({
+    status: 'success',
+    data,
+  });
 };
 
 const commentArticle = async (req, res) => {
-  try {
-    const fields = req.body.comment;
+  const articleId = parseInt(req.params.id, 10);
 
-    await validateInputsFields(fields, 'comment');
+  await validate(articleIdShema, { articleId });
 
-    const articleId = parseInt(req.params.id, 10);
+  await validate(commentSchema, req.body);
 
-    const userId = await gettUserId(req);
+  const fields = req.body.comment;
 
-    const result = await db.query(findArticleByIdQuery, [articleId]);
+  const userId = await gettUserId(req);
 
-    const article = await searchAtrribute(result, 'article');
+  const result = await db.query(findArticleByIdQuery, [articleId]);
+
+  const article = await searchAtrribute(result, 'article');
 
 
-    const value = [userId, fields, articleId];
+  const value = [userId, fields, articleId];
 
-    const { rows } = await db.query(commentArticleQuery, value);
+  const { rows } = await db.query(commentArticleQuery, value);
 
-    const data = {
-      message: 'Comment successfully created',
-      articleTitle: article.title,
-      article: article.article,
-      comment: rows[0].comment,
-      createdOn: rows[0].created_on,
-      commentID: rows[0].comment_id,
-    };
+  const data = {
+    message: 'Comment successfully created',
+    articleTitle: article.title,
+    article: article.article,
+    comment: rows[0].comment,
+    createdOn: rows[0].created_on,
+    commentID: rows[0].comment_id,
+  };
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const GetArticlebyId = async (req, res) => {
-  try {
-    const articleId = parseInt(req.params.id, 10);
+  const articleId = parseInt(req.params.id, 10);
 
-    const articles = await db.query(findArticleByIdQuery, [articleId]);
+  await validate(articleIdShema, { articleId });
 
-    await searchAtrribute(articles, 'article');
+  const articles = await db.query(findArticleByIdQuery, [articleId]);
 
-    const comments = await db.query(getAllArticleCommentById, [articleId]);
+  await searchAtrribute(articles, 'article');
 
-    const formatedArticle = await formatData(articles, 'articles');
-    const formatedComment = await formatData(comments, 'comments');
+  const comments = await db.query(getAllArticleCommentById, [articleId]);
 
-    const data = {
-      ...formatedArticle[0],
-      comments: [...formatedComment],
-    };
+  const formatedArticle = await formatData(articles, 'articles');
 
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const formatedComment = await formatData(comments, 'comments');
+
+  const data = {
+    ...formatedArticle[0],
+    comments: [...formatedComment],
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const flagArticle = async (req, res) => {
-  try {
-    const fields = req.body.flag;
+  const articleId = parseInt(req.params.id, 10);
 
-    await validateInputsFields(fields, 'flag');
+  await validate(articleIdShema, { articleId });
 
-    const articleId = parseInt(req.params.id, 10);
+  await validate(flagShema, req.body);
 
-    const userId = await gettUserId(req);
+  const fields = req.body.flag;
 
-    const result = await db.query(findArticleByIdQuery, [articleId]);
+  const userId = await gettUserId(req);
 
-    const article = await searchAtrribute(result, 'article');
+  const result = await db.query(findArticleByIdQuery, [articleId]);
 
-    const value = [userId, fields, articleId];
+  const article = await searchAtrribute(result, 'article');
 
-    const flag = await db.query(flagArticleQuery, value);
+  const value = [userId, fields, articleId];
 
-    const formatedArticle = await formatData(flag, 'flag');
+  const flag = await db.query(flagArticleQuery, value);
 
-    const data = {
-      message: 'article flag successfully',
-      ...formatedArticle[0],
-      articleTitle: article.title,
-      article: article.article,
-    };
+  const formatedArticle = await formatData(flag, 'flag');
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'article flag successfully',
+    ...formatedArticle[0],
+    articleTitle: article.title,
+    article: article.article,
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 module.exports = {

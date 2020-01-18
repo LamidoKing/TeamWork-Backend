@@ -5,27 +5,20 @@ const { getAllArticles, getAllGifs } = require('../queries');
 require('dotenv').config();
 
 const getFeed = async (req, res) => {
-  try {
-    const articles = await db.query(getAllArticles);
-    const gifs = await db.query(getAllGifs);
+  const articles = await db.query(getAllArticles);
+  const gifs = await db.query(getAllGifs);
 
-    const formatedArticles = await formatData(articles, 'articles');
+  const formatedArticles = await formatData(articles, 'articles');
 
-    const formatedGifs = await formatData(gifs, 'gifs');
-    const data = [...formatedArticles, ...formatedGifs];
+  const formatedGifs = await formatData(gifs, 'gifs');
+  const data = [...formatedArticles, ...formatedGifs];
 
-    const sortedData = await sortData(data);
+  const sortedData = await sortData(data);
 
-    return res.status(200).json({
-      status: 'success',
-      data: sortedData,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(200).json({
+    status: 'success',
+    data: sortedData,
+  });
 };
 
 module.exports = {

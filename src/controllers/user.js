@@ -1,76 +1,66 @@
+const { attemptSignIn, findUser } = require('../auth');
 const {
-  encrypt, attemptCreateUser, attemptSignIn, getToken, formatData,
+  encrypt, formatData, getToken,
 } = require('../utils');
 const db = require('../db');
-const { createUserQuery, findUserQuery } = require('../queries');
+const { createUserQuery } = require('../queries');
+const { createUserSchema, signInSchema, validate } = require('../validation');
 
 require('dotenv').config();
 
 const createUser = async (req, res) => {
-  try {
-    const {
-      admin, firstname, lastname, gender, jobrole, department, address,
-    } = req.body;
+  await validate(createUserSchema, req.body);
 
-    const email = await attemptCreateUser(req.body.email, res);
+  await findUser(req.body.email);
 
-    const password = await encrypt(req.body.password);
+  const {
+    email, admin, firstname, lastname, gender, jobrole, department, address,
+  } = req.body;
 
-    const rolenumber = admin ? process.env.ADMIN : 1;
+  const password = await encrypt(req.body.password);
 
-    const value = [
-      email, password, rolenumber, firstname,
-      lastname, gender, jobrole, department, address,
-    ];
+  const rolenumber = admin ? process.env.ADMIN : 1;
 
-    const rows = await db.query(createUserQuery, value);
-    const formatedData = await formatData(rows, 'create-user');
+  const value = [
+    email, password, rolenumber, firstname,
+    lastname, gender, jobrole, department, address,
+  ];
 
-    const token = await getToken(formatedData.userId, rolenumber);
+  const rows = await db.query(createUserQuery, value);
+  const formatedData = await formatData(rows, 'create-user');
 
-    const data = {
-      message: 'User account successfully created',
-      token,
-      ...formatedData[0],
-    };
+  const token = await getToken(formatedData.userId, rolenumber);
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'User account successfully created',
+    token,
+    ...formatedData[0],
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const signIn = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  await validate(signInSchema, req.body);
 
-    const { rows } = await db.query(findUserQuery, [email]);
+  const { email, password } = req.body;
 
-    const user = await attemptSignIn(rows, password);
+  const user = await attemptSignIn(email, password);
 
-    const token = await getToken(user.user_id, user.rolenumber);
+  const token = await getToken(user.user_id, user.rolenumber);
 
-    const data = {
-      token,
-      userId: user.user_id,
-    };
+  const data = {
+    token,
+    userId: user.user_id,
+  };
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 module.exports = {
