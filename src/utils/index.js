@@ -1,72 +1,19 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const db = require('../db');
-const { findUserQuery } = require('../queries');
 const { uploader } = require('../config');
 const { dataUri } = require('../middleware');
 
 require('dotenv').config();
 
 const encrypt = async (password) => {
-  const err = 'password field cannot be empty';
+  const hashed = await bcrypt.hash(password, 10);
 
-  if (password) {
-    const hashed = await bcrypt.hash(password, 10);
-    return hashed;
-  }
-  throw err;
+  return hashed;
 };
 
 const getToken = async (userId, rolenumber) => {
   const token = await jwt.sign({ userId, rolenumber }, `${process.env.RANDOM_TOKEN}`, { expiresIn: '24h' });
   return token;
-};
-
-const attemptCreateUser = async (email, res) => {
-  const err = {
-    emailTaken: 'email has been taken',
-    invalidEmail: 'invalid email check and try again',
-    emptyEmail: 'Email field cannot be empty',
-  };
-
-  const isvalid = /^([a-zA-Z0-9_-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-  const { rows } = await db.query(findUserQuery, [email]);
-
-  if (email) {
-    if (rows.length > 0) {
-      res.status(401);
-      throw err.emailTaken;
-    }
-
-    if (!isvalid.test(email)) {
-      res.status(401);
-      throw err.invalidEmail;
-    }
-  }
-  if (!email) {
-    res.status(401);
-    throw err.emptyEmail;
-  }
-  return email;
-};
-
-const attemptSignIn = async (rows, password) => {
-  const err = {
-    nouser: 'user with this doent exist',
-    passwordError: 'password is not correct',
-  };
-
-  if (!rows[0]) {
-    throw err.nouser;
-  }
-  const valid = await bcrypt.compare(password, rows[0].password);
-
-  if (!valid) {
-    throw err.passwordError;
-  }
-
-  return rows[0];
 };
 
 const gettUserId = async (req) => {
@@ -77,75 +24,11 @@ const gettUserId = async (req) => {
 };
 
 const processGifToUrl = async (req) => {
-  const err = {
-    noFile: 'must provide gif to post',
-    fileTypeErr: 'file uploded iss not gif file',
-  };
-
-  if (!req.file) {
-    throw err.noFile;
-  }
-
-  if (req.file.mimetype !== 'image/gif') {
-    throw err.fileTypeErr;
-  }
-
   const file = await dataUri(req).content;
 
   const { url } = await uploader.upload(file);
 
   return url;
-};
-
-const attemptPostArticle = async (title, article) => {
-  const err = {
-    noTitle: 'must provide title for the article',
-    noArticle: 'must provide article to post',
-  };
-
-  if (!title) {
-    throw err.noTitle;
-  }
-
-  if (!article) {
-    throw err.noArticle;
-  }
-  return true;
-};
-
-const searchAtrribute = async (result, name) => {
-  const err = {
-    noattr: `${name} doent exist`,
-  };
-
-  if (!result.rows[0]) {
-    throw err.noattr;
-  }
-  return result.rows[0];
-};
-
-const validateInputsFields = (fields, model) => {
-  const err = {
-    comment: {
-      noComment: 'must input your comment',
-      FlagError: 'must input flag and must be boolean',
-    },
-  };
-
-  if (model === 'comment') {
-    if (!fields) {
-      throw err.comment.noComment;
-    }
-    return true;
-  }
-
-  if (model === 'flag') {
-    if (fields === undefined || typeof fields !== 'boolean') {
-      throw err.comment.FlagError;
-    }
-    return true;
-  }
-  return true;
 };
 
 const formatData = async (data, dataName) => {
@@ -217,13 +100,8 @@ const sortData = async (data) => data.sort((a, b) => {
 module.exports = {
   encrypt,
   getToken,
-  attemptCreateUser,
-  attemptSignIn,
   gettUserId,
   processGifToUrl,
-  attemptPostArticle,
-  searchAtrribute,
-  validateInputsFields,
   formatData,
   sortData,
 };

@@ -6,16 +6,18 @@
   "author": "lamido <kinglamido@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "12.13.0",
+    "node": ">=8",
     "yarn": "1.x"
   },
   "scripts": {
     "start": "node server.js",
+    "dev": "nodemon",
     "lint": "eslint 'src/**/*.js' 'spec/**/*.js' --fix",
     "test": "./node_modules/.bin/jasmine-node spec",
     "cover": "istanbul cover jasmine-node --captureExceptions spec/ && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
+    "@hapi/joi": "^16.1.8",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.16.0",

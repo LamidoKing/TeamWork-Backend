@@ -1,57 +1,46 @@
 const jwt = require('jsonwebtoken');
+const { BadRequest, Unauthorize } = require('../errors');
 
 require('dotenv').config();
 
 const auth = async (req, res, next) => {
-  try {
-    const token = await req.headers.authorization.split(' ')[1];
+  if (!req.headers.authorization) {
+    throw new Unauthorize('You must logged in');
+  }
 
-    const decodedToken = jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+  const token = await req.headers.authorization.split(' ')[1];
 
-    const { userId } = decodedToken;
+  const decodedToken = jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
 
-    if (req.body.user_id && req.body.user_id !== userId) {
-      const err = 'Invalid user ID';
-      throw err;
-    } else {
-      next();
-    }
-  } catch (error) {
-    res.status(401).json({
-      status: 'error',
-      error: 'Invalid request!',
-    });
+  const { userId } = decodedToken;
+
+  if (req.body.user_id && req.body.user_id !== userId) {
+    const err = 'Invalid user ID';
+    throw new Unauthorize(err);
+  } else {
+    next();
   }
 };
 
 const authAdmin = async (req, res, next) => {
-  try {
-    const { authorization } = req.headers;
+  const { authorization } = req.headers;
 
-    const err = {
-      notAuth: 'Only user with admin access can create account',
-      noToken: 'must SignIn As Admin',
-    };
-    if (authorization) {
-      const token = await req.headers.authorization.split(' ')[1];
-      const decodedToken = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
+  const err = 'Not Authorized';
 
+  if (authorization) {
+    const token = await authorization.split(' ')[1];
 
-      const { rolenumber } = decodedToken;
+    const decodedToken = await jwt.verify(token, `${process.env.RANDOM_TOKEN}`);
 
-      if (rolenumber.toString() !== process.env.ADMIN) {
-        throw err.notAuth;
-      } else {
-        next();
-      }
+    const { rolenumber } = decodedToken;
+
+    if (rolenumber.toString() !== process.env.ADMIN) {
+      throw new Unauthorize(err);
     } else {
-      throw err.noToken;
+      next();
     }
-  } catch (error) {
-    res.status(401).json({
-      status: 'error',
-      error,
-    });
+  } else {
+    throw new BadRequest('You must logged in');
   }
 };
 

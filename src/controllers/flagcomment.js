@@ -1,51 +1,50 @@
 
-const {
-  gettUserId, searchAtrribute, validateInputsFields, formatData,
-} = require('../utils');
+const { formatData, gettUserId } = require('../utils');
+const { searchAtrribute } = require('../auth');
 const db = require('../db');
 const {
   flagcommentQuery, findCommentByIdQuery,
 } = require('../queries');
+const {
+  commentIdShema,
+  flagShema,
+  validate,
+} = require('../validation');
 
 require('dotenv').config();
 
 const flagComment = async (req, res) => {
-  try {
-    const fields = req.body.flag;
+  const commentId = parseInt(req.params.commentId, 10);
 
-    validateInputsFields(fields, 'flag');
+  await validate(commentIdShema, { commentId });
 
-    const commentId = parseInt(req.params.commentId, 10);
+  await validate(flagShema, req.body);
 
-    const userId = await gettUserId(req);
+  const fields = req.body.flag;
 
-    const result = await db.query(findCommentByIdQuery, [commentId]);
+  const userId = await gettUserId(req);
 
-    const comment = await searchAtrribute(result, 'comment');
+  const result = await db.query(findCommentByIdQuery, [commentId]);
 
-    const value = [userId, fields, commentId];
+  const comment = await searchAtrribute(result, 'comment');
 
-    const flag = await db.query(flagcommentQuery, value);
+  const value = [userId, fields, commentId];
 
-    const formatedFlag = await formatData(flag, 'flag');
+  const flag = await db.query(flagcommentQuery, value);
 
-    const data = {
-      message: 'comment flag  successfully',
-      ...formatedFlag[0],
-      commentId: comment.comment_id,
-      comment: comment.comment,
-    };
+  const formatedFlag = await formatData(flag, 'flag');
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'comment flag  successfully',
+    ...formatedFlag[0],
+    commentId: comment.comment_id,
+    comment: comment.comment,
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 module.exports = {

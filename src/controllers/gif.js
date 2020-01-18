@@ -1,183 +1,170 @@
-const {
-  gettUserId, processGifToUrl, searchAtrribute, validateInputsFields, formatData,
-} = require('../utils');
+const { processGifToUrl, formatData, gettUserId } = require('../utils');
+const { searchAtrribute } = require('../auth');
 const db = require('../db');
 const {
-  postGifQuery, findGifByIdQuery, deleteGifQuery,
-  commentGifQuery, getAllGifCommentById, flagGifQuery,
+  postGifQuery,
+  findGifByIdQuery,
+  deleteGifQuery,
+  commentGifQuery,
+  getAllGifCommentById,
+  flagGifQuery,
 } = require('../queries');
+const {
+  gifSchema,
+  gifIdShema,
+  commentSchema,
+  flagShema,
+  validate,
+} = require('../validation');
 
 require('dotenv').config();
 
 const postGif = async (req, res) => {
-  try {
-    const { title } = req.body;
+  await validate(gifSchema, {
+    title: req.body.title,
+    file: req.file,
+    mimetype: req.file ? req.file.mimetype : '',
+  });
 
-    const userId = await gettUserId(req);
+  const { title } = req.body;
 
-    const url = await processGifToUrl(req);
+  const userId = await gettUserId(req);
 
-    const value = [title, userId, url];
+  const url = await processGifToUrl(req);
 
-    const { rows } = await db.query(postGifQuery, value);
+  const value = [title, userId, url];
 
-    const data = {
-      message: 'GIF image successfully posted',
-      userId: rows[0].user_id,
-      gifId: rows[0].gifid,
-      title: rows[0].title,
-      gifUrl: rows[0].gif_url,
-      createdOn: rows[0].created_on,
-    };
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const { rows } = await db.query(postGifQuery, value);
+
+  const data = {
+    message: 'GIF image successfully posted',
+    userId: rows[0].user_id,
+    gifId: rows[0].gifid,
+    title: rows[0].title,
+    gifUrl: rows[0].gif_url,
+    createdOn: rows[0].created_on,
+  };
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const deleteGif = async (req, res) => {
-  try {
-    const gifId = parseInt(req.params.id, 10);
+  const gifId = parseInt(req.params.id, 10);
 
-    const result = await db.query(findGifByIdQuery, [gifId]);
+  await validate(gifIdShema, { gifId });
 
-    await searchAtrribute(result, 'gif');
+  const result = await db.query(findGifByIdQuery, [gifId]);
 
-    const value = [gifId];
+  await searchAtrribute(result, 'gif');
 
-    await db.query(deleteGifQuery, value);
+  const value = [gifId];
 
-    const data = {
-      message: 'gif post successfully deleted',
-    };
+  await db.query(deleteGifQuery, value);
 
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'gif post successfully deleted',
+  };
+
+  return res.status(200).json({
+    status: 'success',
+    data,
+  });
 };
 
 const commentGif = async (req, res) => {
-  try {
-    const fields = {
-      comment: req.body.comment,
-    };
+  const gifId = parseInt(req.params.id, 10);
 
-    await validateInputsFields(fields, 'gif');
+  await validate(gifIdShema, { gifId });
 
-    const gifId = parseInt(req.params.id, 10);
+  await validate(commentSchema, req.body);
 
-    const userId = await gettUserId(req);
+  const fields = req.body.comment;
 
-    const result = await db.query(findGifByIdQuery, [gifId]);
+  const userId = await gettUserId(req);
 
-    const gif = await searchAtrribute(result, 'gif');
+  const result = await db.query(findGifByIdQuery, [gifId]);
 
+  const gif = await searchAtrribute(result, 'gif');
 
-    const value = [userId, fields.comment, gifId];
+  const value = [userId, fields, gifId];
 
-    const { rows } = await db.query(commentGifQuery, value);
+  const { rows } = await db.query(commentGifQuery, value);
 
-    const data = {
-      message: 'comment successfully created',
-      gifTitle: gif.title,
-      comment: rows[0].comment,
-      createdOn: rows[0].created_on,
-      commentID: rows[0].comment_id,
-    };
+  const data = {
+    message: 'comment successfully created',
+    gifTitle: gif.title,
+    comment: rows[0].comment,
+    createdOn: rows[0].created_on,
+    commentID: rows[0].comment_id,
+  };
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 const getGifbyId = async (req, res) => {
-  try {
-    const gifId = parseInt(req.params.id, 10);
+  const gifId = parseInt(req.params.id, 10);
 
-    const gifs = await db.query(findGifByIdQuery, [gifId]);
+  await validate(gifIdShema, { gifId });
 
-    await searchAtrribute(gifs, 'gif');
+  const gifs = await db.query(findGifByIdQuery, [gifId]);
 
-    const comments = await db.query(getAllGifCommentById, [gifId]);
+  await searchAtrribute(gifs, 'gif');
 
-    const formatedGifs = await formatData(gifs, 'gifs');
-    const formatedComment = await formatData(comments, 'comments');
+  const comments = await db.query(getAllGifCommentById, [gifId]);
+
+  const formatedGifs = await formatData(gifs, 'gifs');
+
+  const formatedComment = await formatData(comments, 'comments');
 
 
-    const data = {
-      ...formatedGifs[0],
-      comments: [...formatedComment],
-    };
+  const data = {
+    ...formatedGifs[0],
+    comments: [...formatedComment],
+  };
 
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  return res.status(200).json({
+    status: 'success',
+    data,
+  });
 };
 
 const flagGif = async (req, res) => {
-  try {
-    const fields = req.body.flag;
+  const gifId = parseInt(req.params.id, 10);
 
-    await validateInputsFields(fields, 'flag');
+  await validate(gifIdShema, { gifId });
 
-    const gifId = parseInt(req.params.id, 10);
+  await validate(flagShema, req.body);
 
-    const userId = await gettUserId(req);
+  const fields = req.body.flag;
 
-    const result = await db.query(findGifByIdQuery, [gifId]);
+  const userId = await gettUserId(req);
 
-    const gif = await searchAtrribute(result, 'gif');
+  const result = await db.query(findGifByIdQuery, [gifId]);
 
-    const value = [userId, fields, gifId];
+  const gif = await searchAtrribute(result, 'gif');
 
-    const flag = await db.query(flagGifQuery, value);
+  const value = [userId, fields, gifId];
 
-    const formatedFlag = await formatData(flag, 'flag');
+  const flag = await db.query(flagGifQuery, value);
 
-    const data = {
-      message: 'gif flag  successfully',
-      ...formatedFlag[0],
-      gifTitle: gif.title,
-      gifUrl: gif.gif_url,
-    };
+  const formatedFlag = await formatData(flag, 'flag');
 
-    return res.status(201).json({
-      status: 'success',
-      data,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'error',
-      error,
-    });
-  }
+  const data = {
+    message: 'gif flag  successfully',
+    ...formatedFlag[0],
+    gifTitle: gif.title,
+    gifUrl: gif.gif_url,
+  };
+
+  return res.status(201).json({
+    status: 'success',
+    data,
+  });
 };
 
 

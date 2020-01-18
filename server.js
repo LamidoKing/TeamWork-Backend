@@ -1,5 +1,5 @@
 const http = require('http');
-const app = require('./src/app');
+const createApp = require('./src/app');
 
 
 const normalizePort = (val) => {
@@ -16,6 +16,10 @@ const normalizePort = (val) => {
 
 const port = normalizePort(process.env.PORT || 3000);
 
+const app = createApp();
+
+const server = http.createServer(app);
+
 app.set('port', port);
 
 const errorHandler = (error) => {
@@ -23,7 +27,9 @@ const errorHandler = (error) => {
     throw error;
   }
   const address = server.address();
+
   const bind = typeof address === 'string' ? `pipe${address}` : `port: ${port}`;
+
   switch (error.code) {
     case 'EACCES':
       console.error(`${bind} requires elevated privaleges.`);
@@ -38,7 +44,6 @@ const errorHandler = (error) => {
   }
 };
 
-const server = http.createServer(app);
 
 server.on('error', errorHandler);
 

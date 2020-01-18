@@ -7,7 +7,7 @@ const { auth } = require('../src/middleware');
 frisby.globalSetup({
   request: {
     headers: {
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsInJvbGVudW1iZXIiOiIxOTE5IiwiaWF0IjoxNTczNzMxNjIxLCJleHAiOjE1NzM4MTgwMjF9.4_KeXG7NQ4MPGmxLH3WYthpBWRmgRDUe8tRP5qPPcwc',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjkwLCJyb2xlbnVtYmVyIjoxOTE5LCJpYXQiOjE1NzgxNzgzMDMsImV4cCI6MTU3ODI2NDcwM30.Bb7SG0CNYOCZpOVtrewZjNb6_F1OqlCz0MuKXJDtxOM',
       'Content-Type': 'application/json',
     },
   },
@@ -23,8 +23,8 @@ beforeEach((done) => {
     userId: 1,
     firstName: 'lmd',
     lastName: 'tj',
-    email: 'andela@gmail.com',
-    password: 'lamidotijjani',
+    email: 'Devct@gmail.com',
+    password: 'andela',
     gender: 'male',
     jobRole: 'sfsf',
     department: 'sfsds',
